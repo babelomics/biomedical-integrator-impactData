@@ -1,0 +1,36 @@
+version: '3.1'
+
+networks:
+  beacon-priv:
+  pub:
+#  my-app-network:
+#    external: true
+
+services:
+
+  ###########################################
+  # Integrator server
+  ###########################################
+
+  integrator:
+    # DEVELOP
+    build:
+      context: ./../
+    # PROD
+#    image: clinbioinfosspa/virus-beacon2:v1.0.0
+    hostname: beacon
+    container_name: virus_beacon2_integrator
+    volumes:
+      - ../integrator/:/beacon/integrator/  # inject the code, so we see the modifications "live"
+      - ./logger.yml:/beacon/integrator/logger.yml
+    ports:
+      - 5052:5052
+    networks:
+      - beacon-priv
+      - pub
+      #- idp-priv
+#      - my-app-network
+    #entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','-m', 'integrator']
+
